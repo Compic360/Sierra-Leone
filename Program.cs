@@ -10,6 +10,7 @@ using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Intrinsics;
 using System.Globalization;
+using System.Threading;
 using NAudio.Wave;
 using System;
 using System.Reflection.Emit;
@@ -250,6 +251,7 @@ void SKIP8()
 // TITLE
 
 
+
 Console.WriteLine(new string('-', Console.WindowWidth));
 string title1 = "______   __    _   _____ _                       _                           ";
 Console.SetCursorPosition((Console.WindowWidth - title1.Length) / 2, Console.CursorTop);
@@ -273,6 +275,13 @@ Console.WriteLine(new string('-', Console.WindowWidth));
 Console.WriteLine("");
 Console.WriteLine();
 
+
+MusicPlayer musicPlayer = new MusicPlayer();
+musicPlayer.PlayLoop("sfx/tv-off.mp3"); // Make sure the path is correct
+Console.WriteLine("Playing music...");
+
+
+    
 // MENU "BUTTONS"
 
 
@@ -522,3 +531,65 @@ Go, go, go, go
 Go, go, go, go
 */
 
+public class MusicPlayer
+{
+    private IWavePlayer outputDevice;
+    private AudioFileReader audioFile;
+
+    public void PlayLoop(string filePath)
+    {
+        Stop(); // Ensure any existing playback is stopped
+
+        audioFile = new AudioFileReader(filePath);
+        var loop = new LoopStream(audioFile);
+        outputDevice = new WaveOutEvent();
+        outputDevice.Init(loop);
+        outputDevice.Play();
+    }
+
+    public void Stop()
+    {
+        outputDevice?.Stop();
+        audioFile?.Dispose();
+        outputDevice?.Dispose();
+    }
+
+    // A custom stream that loops playback
+    private class LoopStream : WaveStream
+    {
+        private readonly WaveStream sourceStream;
+
+        public LoopStream(WaveStream sourceStream)
+        {
+            this.sourceStream = sourceStream;
+        }
+
+        public override WaveFormat WaveFormat => sourceStream.WaveFormat;
+        public override long Length => long.MaxValue; // Loop forever
+        public override long Position
+        {
+            get => sourceStream.Position;
+            set => sourceStream.Position = value;
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            int totalBytesRead = 0;
+
+            while (totalBytesRead < count)
+            {
+                int bytesRead = sourceStream.Read(buffer, offset + totalBytesRead, count - totalBytesRead);
+                if (bytesRead == 0)
+                {
+                    sourceStream.Position = 0;
+                }
+                else
+                {
+                    totalBytesRead += bytesRead;
+                }
+            }
+
+            return totalBytesRead;
+        }
+    }
+}
