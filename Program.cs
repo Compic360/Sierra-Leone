@@ -16,6 +16,7 @@ using System.Reflection.Emit;
 using System.Diagnostics;
 using NAudio.CoreAudioApi;
 
+
 // HEALTH, CASH, MORE
 
 
@@ -79,7 +80,7 @@ void OpenUrl(string url)
 
 void cheats ()
 {
-    Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
+    Console.WriteLine(new string('-', Console.WindowWidth));
     Console.WriteLine("");
  string chmen1 = "  ,ad8888ba,   88        88  88888888888         db    888888888888  ad88888ba   ";
  Console.SetCursorPosition((Console.WindowWidth - chmen1.Length) / 2, Console.CursorTop);
@@ -105,8 +106,7 @@ void cheats ()
  string chmen8 = "  `\"Y8888Y\"'   88        88  88888888888  d8'          `8b  88       \"Y88888P\"   ";
  Console.SetCursorPosition((Console.WindowWidth - chmen8.Length) / 2, Console.CursorTop);
  Console.WriteLine(chmen8);
- Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
- Console.WriteLine("");
+ Console.WriteLine(new string('-', Console.WindowWidth));
  Console.WriteLine("Vlož cheat kód");
 
  switch (Console.ReadLine())
@@ -250,7 +250,7 @@ void SKIP8()
 // TITLE
 
 
-Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
+Console.WriteLine(new string('-', Console.WindowWidth));
 string title1 = "______   __    _   _____ _                       _                           ";
 Console.SetCursorPosition((Console.WindowWidth - title1.Length) / 2, Console.CursorTop);
 Console.WriteLine(title1);
@@ -269,7 +269,7 @@ Console.WriteLine(title5);
 string title6 = "\\_|  \\__,_|\\__,_| \\____/|_|\\___|_|  |_|  \\__,_| \\_____/\\___|\\___/|_| |_|\\___|";
 Console.SetCursorPosition((Console.WindowWidth - title6.Length) / 2, Console.CursorTop);
 Console.WriteLine(title6);
-Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
+Console.WriteLine(new string('-', Console.WindowWidth));
 Console.WriteLine("");
 Console.WriteLine();
 
