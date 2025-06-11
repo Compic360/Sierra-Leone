@@ -1,6 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 
+
+
 // TECH
 
 
@@ -17,6 +19,23 @@ using System.Reflection.Emit;
 using System.Diagnostics;
 using NAudio.CoreAudioApi;
 
+WaveOutEvent outputDevice;
+AudioFileReader audioFile;
+
+static void FlickerText(string message, int x, int y, int interval = 500)
+{
+    bool visible = true;
+
+    while (!Console.KeyAvailable)
+    {
+        Console.SetCursorPosition(x, y);
+        Console.Write(visible ? message : new string(' ', message.Length));
+        visible = !visible;
+        Thread.Sleep(interval);
+    }
+
+    Console.ReadKey(true); // Consume the key press
+}
 
 // HEALTH, CASH, MORE
 
@@ -34,7 +53,7 @@ void AddXP(int amount)
     while (XP >= 100)
     {
         XP -= 100;
-        LV ++;
+        LV++;
         Console.WriteLine($"Level up! New level: {LV}");
         ADDCR(150);
         ADDHP(100);
@@ -58,6 +77,7 @@ bool HasArmor = false;
 bool HasCrystal = false;
 bool HasMedal = false;
 bool HasCC = false;
+bool UncStatus = false;
 
 void OpenUrl(string url)
 {
@@ -79,38 +99,38 @@ void OpenUrl(string url)
 
 // CHEAT VOID
 
-void cheats ()
+void cheats()
 {
     Console.WriteLine(new string('-', Console.WindowWidth));
     Console.WriteLine("");
- string chmen1 = "  ,ad8888ba,   88        88  88888888888         db    888888888888  ad88888ba   ";
- Console.SetCursorPosition((Console.WindowWidth - chmen1.Length) / 2, Console.CursorTop);
- Console.WriteLine(chmen1);
- string chmen2 = " d8\"'    `\"8b  88        88  88                 d88b        88      d8\"     \"8b  ";
- Console.SetCursorPosition((Console.WindowWidth - chmen2.Length) / 2, Console.CursorTop);
- Console.WriteLine(chmen2);
- string chmen3 = "d8'            88        88  88                d8'`8b       88      Y8,          ";
- Console.SetCursorPosition((Console.WindowWidth - chmen3.Length) / 2, Console.CursorTop);
- Console.WriteLine(chmen3);
- string chmen4 = "88             88aaaaaaaa88  88aaaaa          d8'  `8b      88      `Y8aaaaa,    ";
- Console.SetCursorPosition((Console.WindowWidth - chmen4.Length) / 2, Console.CursorTop);
- Console.WriteLine(chmen4);
- string chmen5 = "88             88\"\"\"\"\"\"\"\"88  88\"\"\"\"\"         d8YaaaaY8b     88        `\"\"\"\"\"8b,  ";
- Console.SetCursorPosition((Console.WindowWidth - chmen5.Length) / 2, Console.CursorTop);
- Console.WriteLine(chmen5);
- string chmen6 = "Y8,            88        88  88             d8\"\"\"\"\"\"\"\"8b    88              `8b  ";
- Console.SetCursorPosition((Console.WindowWidth - chmen6.Length) / 2, Console.CursorTop);
- Console.WriteLine(chmen6);
- string chmen7 = " Y8a.    .a8P  88        88  88            d8'        `8b   88      Y8a     a8P  ";
- Console.SetCursorPosition((Console.WindowWidth - chmen7.Length) / 2, Console.CursorTop);
- Console.WriteLine(chmen7);
- string chmen8 = "  `\"Y8888Y\"'   88        88  88888888888  d8'          `8b  88       \"Y88888P\"   ";
- Console.SetCursorPosition((Console.WindowWidth - chmen8.Length) / 2, Console.CursorTop);
- Console.WriteLine(chmen8);
- Console.WriteLine(new string('-', Console.WindowWidth));
- Console.WriteLine("Vlož cheat kód");
+    string chmen1 = "  ,ad8888ba,   88        88  88888888888         db    888888888888  ad88888ba   ";
+    Console.SetCursorPosition((Console.WindowWidth - chmen1.Length) / 2, Console.CursorTop);
+    Console.WriteLine(chmen1);
+    string chmen2 = " d8\"'    `\"8b  88        88  88                 d88b        88      d8\"     \"8b  ";
+    Console.SetCursorPosition((Console.WindowWidth - chmen2.Length) / 2, Console.CursorTop);
+    Console.WriteLine(chmen2);
+    string chmen3 = "d8'            88        88  88                d8'`8b       88      Y8,          ";
+    Console.SetCursorPosition((Console.WindowWidth - chmen3.Length) / 2, Console.CursorTop);
+    Console.WriteLine(chmen3);
+    string chmen4 = "88             88aaaaaaaa88  88aaaaa          d8'  `8b      88      `Y8aaaaa,    ";
+    Console.SetCursorPosition((Console.WindowWidth - chmen4.Length) / 2, Console.CursorTop);
+    Console.WriteLine(chmen4);
+    string chmen5 = "88             88\"\"\"\"\"\"\"\"88  88\"\"\"\"\"         d8YaaaaY8b     88        `\"\"\"\"\"8b,  ";
+    Console.SetCursorPosition((Console.WindowWidth - chmen5.Length) / 2, Console.CursorTop);
+    Console.WriteLine(chmen5);
+    string chmen6 = "Y8,            88        88  88             d8\"\"\"\"\"\"\"\"8b    88              `8b  ";
+    Console.SetCursorPosition((Console.WindowWidth - chmen6.Length) / 2, Console.CursorTop);
+    Console.WriteLine(chmen6);
+    string chmen7 = " Y8a.    .a8P  88        88  88            d8'        `8b   88      Y8a     a8P  ";
+    Console.SetCursorPosition((Console.WindowWidth - chmen7.Length) / 2, Console.CursorTop);
+    Console.WriteLine(chmen7);
+    string chmen8 = "  `\"Y8888Y\"'   88        88  88888888888  d8'          `8b  88       \"Y88888P\"   ";
+    Console.SetCursorPosition((Console.WindowWidth - chmen8.Length) / 2, Console.CursorTop);
+    Console.WriteLine(chmen8);
+    Console.WriteLine(new string('-', Console.WindowWidth));
+    Console.WriteLine("Vlož cheat kód");
 
- switch (Console.ReadLine())
+    switch (Console.ReadLine())
     {
         case "/TGM":
             GodMode();
@@ -155,7 +175,10 @@ void cheats ()
         case "//WEB":
             OpenUrl("https://cxomxpixc.eu/");
             break;
-
+        case "//BOSS6":
+            Console.Clear();
+            BOSS6();
+            break;
 
     }
 
@@ -164,7 +187,7 @@ void cheats ()
 // VOIDS: CHEATS
 
 
-void GodMode ()
+void GodMode()
 {
     int playerHealth = 2147483647;
     Console.WriteLine("Kód použit! Máte teď nekonečno životů.");
@@ -251,7 +274,6 @@ void SKIP8()
 // TITLE
 
 
-
 Console.WriteLine(new string('-', Console.WindowWidth));
 string title1 = "______   __    _   _____ _                       _                           ";
 Console.SetCursorPosition((Console.WindowWidth - title1.Length) / 2, Console.CursorTop);
@@ -275,13 +297,44 @@ Console.WriteLine(new string('-', Console.WindowWidth));
 Console.WriteLine("");
 Console.WriteLine();
 
+try
+{
+    string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sfx", "tv-off.wav");
 
-MusicPlayer musicPlayer = new MusicPlayer();
-musicPlayer.PlayLoop("sfx/tv-off.mp3"); // Make sure the path is correct
-Console.WriteLine("Playing music...");
 
 
-    
+    if (!File.Exists(filePath))
+    {
+        Console.WriteLine("File not found!");
+        return;
+    }
+
+    outputDevice = new WaveOutEvent();
+    using var audioFile1 = new AudioFileReader(filePath);
+    using var outputDevice1 = outputDevice;
+    outputDevice1.Init(audioFile1);
+    outputDevice1.Play();
+
+    string prrr1 = "Stiskněte ENTER pro pokračování";
+
+    int x = (Console.WindowWidth - prrr1.Length) / 2;
+    int y = Console.CursorTop + 2;
+
+    FlickerText(prrr1, x, y);
+
+
+    Console.ReadLine(); // Keep app running while sound plays
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Error playing sound");
+    Console.WriteLine(ex);
+}
+
+
+
+
+
 // MENU "BUTTONS"
 
 
@@ -302,7 +355,7 @@ Console.WriteLine("");
 
 
 
-ConsoleKeyInfo key = Console.ReadKey(true); 
+ConsoleKeyInfo key = Console.ReadKey(true);
 
 switch (key.Key)
 {
@@ -360,7 +413,7 @@ switch (key.Key)
 //CHAPTERS
 
 
-void chap1 ()
+void chap1()
 {
     Thread.Sleep(3000);
 }
@@ -400,7 +453,7 @@ void chap8()
 
 }
 
-void END ()
+void END()
 {
 
 }
@@ -410,42 +463,212 @@ void END ()
 
 void BOSS1()
 {
-    Thread.Sleep(3000);
+    ///
+    // Start music
+    outputDevice = new WaveOutEvent();
+    audioFile = new AudioFileReader("sfx/YEEZUS.mp3"); // Make sure this file exists
+
+    outputDevice.Init(audioFile);
+    outputDevice.Play();
+
+    Thread.Sleep(5600);
+    Console.WriteLine("Za tebou se objevil YEEZUS!");
+    Console.WriteLine(" ");
+    Console.ReadKey();
+
+    // Simulate boss defeat 
+    Console.WriteLine("");                                                                       ///
+
+    // Stop and clean up music
+    outputDevice.Stop();
+    audioFile.Dispose();
+    outputDevice.Dispose();
+
+    Console.WriteLine("The music stops as silence returns to the battlefield.");
 }
 
 void BOSS2()
 {
+    ///
+    // Start music
+    outputDevice = new WaveOutEvent();
+    audioFile = new AudioFileReader("sfx/YEEZUS.mp3"); // Make sure this file exists
 
+    outputDevice.Init(audioFile);
+    outputDevice.Play();
+
+    Thread.Sleep(5600);
+    Console.WriteLine("Za tebou se objevil YEEZUS!");
+    Console.WriteLine(" ");
+    Console.ReadKey();
+
+    // Simulate boss defeat 
+    Console.WriteLine("");                                                                       ///
+
+    // Stop and clean up music
+    outputDevice.Stop();
+    audioFile.Dispose();
+    outputDevice.Dispose();
+
+    Console.WriteLine("The music stops as silence returns to the battlefield.");
 }
 
 void BOSS3()
 {
+    ///
+    // Start music
+    outputDevice = new WaveOutEvent();
+    audioFile = new AudioFileReader("sfx/YEEZUS.mp3"); // Make sure this file exists
 
+    outputDevice.Init(audioFile);
+    outputDevice.Play();
+
+    Thread.Sleep(5600);
+    Console.WriteLine("Za tebou se objevil YEEZUS!");
+    Console.WriteLine(" ");
+    Console.ReadKey();
+
+    // Simulate boss defeat 
+    Console.WriteLine("");                                                                       ///
+
+    // Stop and clean up music
+    outputDevice.Stop();
+    audioFile.Dispose();
+    outputDevice.Dispose();
+
+    Console.WriteLine("The music stops as silence returns to the battlefield.");
 }
 
 void BOSS4()
 {
+    ///
+    // Start music
+    outputDevice = new WaveOutEvent();
+    audioFile = new AudioFileReader("sfx/YEEZUS.mp3"); // Make sure this file exists
 
+    outputDevice.Init(audioFile);
+    outputDevice.Play();
+
+    Thread.Sleep(5600);
+    Console.WriteLine("Za tebou se objevil YEEZUS!");
+    Console.WriteLine(" ");
+    Console.ReadKey();
+
+    // Simulate boss defeat 
+    Console.WriteLine("");                                                                       ///
+
+    // Stop and clean up music
+    outputDevice.Stop();
+    audioFile.Dispose();
+    outputDevice.Dispose();
+
+    Console.WriteLine("The music stops as silence returns to the battlefield.");
 }
 
 void BOSS5()
 {
+    ///
+    // Start music
+    outputDevice = new WaveOutEvent();
+    audioFile = new AudioFileReader("sfx/YEEZUS.mp3"); // Make sure this file exists
 
+    outputDevice.Init(audioFile);
+    outputDevice.Play();
+
+    Thread.Sleep(5600);
+    Console.WriteLine("Za tebou se objevil YEEZUS!");
+    Console.WriteLine(" ");
+    Console.ReadKey();
+
+    // Simulate boss defeat 
+    Console.WriteLine("");                                                                       ///
+
+    // Stop and clean up music
+    outputDevice.Stop();
+    audioFile.Dispose();
+    outputDevice.Dispose();
+
+    Console.WriteLine("The music stops as silence returns to the battlefield.");
 }
 
 void BOSS6()
 {
+    ///
+    // Start music
+    outputDevice = new WaveOutEvent();
+    audioFile = new AudioFileReader("sfx/YEEZUS.mp3"); // Make sure this file exists
 
+    outputDevice.Init(audioFile);
+    outputDevice.Play();
+
+    Thread.Sleep(5600);
+    Console.WriteLine("Za tebou se objevil YEEZUS!");
+    Console.WriteLine(" ");
+    Console.ReadKey();
+
+    // Simulate boss defeat 
+    Console.WriteLine("");                                                                       ///
+
+    // Stop and clean up music
+    outputDevice.Stop();
+    audioFile.Dispose();
+    outputDevice.Dispose();
+
+    Console.WriteLine("The music stops as silence returns to the battlefield.");
 }
+
+
 
 void BOSS7()
 {
+    ///
+    // Start music
+    outputDevice = new WaveOutEvent();
+    audioFile = new AudioFileReader("sfx/YEEZUS.mp3"); // Make sure this file exists
 
+    outputDevice.Init(audioFile);
+    outputDevice.Play();
+
+    Thread.Sleep(5600);
+    Console.WriteLine("Za tebou se objevil YEEZUS!");
+    Console.WriteLine(" ");
+    Console.ReadKey();
+
+    // Simulate boss defeat 
+    Console.WriteLine("");                                                                       ///
+
+    // Stop and clean up music
+    outputDevice.Stop();
+    audioFile.Dispose();
+    outputDevice.Dispose();
+
+    Console.WriteLine("The music stops as silence returns to the battlefield.");
 }
 
 void BOSS8()
 {
+    ///
+    // Start music
+    outputDevice = new WaveOutEvent();
+    audioFile = new AudioFileReader("sfx/YEEZUS.mp3"); // Make sure this file exists
 
+    outputDevice.Init(audioFile);
+    outputDevice.Play();
+
+    Thread.Sleep(5600);
+    Console.WriteLine("Za tebou se objevil YEEZUS!");
+    Console.WriteLine(" ");
+    Console.ReadKey();
+
+    // Simulate boss defeat 
+    Console.WriteLine("");                                                                       ///
+
+    // Stop and clean up music
+    outputDevice.Stop();
+    audioFile.Dispose();
+    outputDevice.Dispose();
+
+    Console.WriteLine("The music stops as silence returns to the battlefield.");
 }
 
 
